@@ -10,14 +10,21 @@ load_dotenv()
 TARGET_USER = os.getenv("TARGET_USER")
 
 def get_random_message():
-    """Загружает список фраз из JSON и выбирает одну."""
+    """Загружает список фраз из JSON и выбирает одну строку."""
     try:
         with open('messages.json', 'r', encoding='utf-8') as f:
             messages = json.load(f)
-            return random.choice(messages)
+            # Если messages — это список списков, нам нужно добраться до строки
+            choice = random.choice(messages)
+            
+            # Проверка: если вдруг выбрался список, берем его первый элемент
+            if isinstance(choice, list):
+                return str(choice[0])
+            return str(choice)
+            
     except Exception as e:
         print(f"❌ Ошибка при чтении messages.json: {e}")
-        return "Доброе утро! Я тебя люблю! ❤️" # Запасной вариант
+        return "Доброе утро! Я тебя люблю! ❤️"
 
 def send_daily_message():
     # Получаем случайную фразу
